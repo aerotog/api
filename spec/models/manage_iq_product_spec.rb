@@ -16,14 +16,9 @@ describe ManageIqProduct do
   it { should have_one(:product) }
   it { should belong_to(:cloud) }
 
-  describe '#provision' do
-    it 'creates an instance of the ProvisionWorker class' do
-      product = build(:manage_iq_product)
-      allow(ProvisionWorker).to receive(:new)
-
-      product.provision(1)
-
-      expect(ProvisionWorker).to have_received(:new).with(1)
+  describe '#provisioner' do
+    it 'returns ManageIQ' do
+      expect(ManageIqProduct.new.provisioner).to eq(ManageIQ)
     end
   end
 

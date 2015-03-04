@@ -40,4 +40,6 @@ class Product < ActiveRecord::Base
   has_many :answers, class_name: 'ProductAnswer'
 
   accepts_nested_attributes_for :answers
+
+  delegate :provisioner, to: :provisionable
 end

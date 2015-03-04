@@ -16,7 +16,7 @@ class ManageIqProduct < ActiveRecord::Base
   has_one :product, as: :provisionable
   belongs_to :cloud
 
-  def provision(order_item_id)
-    ProvisionWorker.new(order_item_id)
+  def provisioner
+    ManageIQ
   end
 end

@@ -89,5 +89,4 @@ gem 'daemons'
 # Get picky about what is put into responses
 gem 'active_model_serializers', '~> 0.8.0'
 
-# fog.io
-gem 'fog'
+gem 'jellyfish-fog-aws', path: 'lib/jellyfish-fog-aws'

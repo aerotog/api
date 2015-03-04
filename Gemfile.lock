@@ -1,3 +1,9 @@
+PATH
+  remote: lib/jellyfish-fog-aws
+  specs:
+    jellyfish-fog-aws (0.0.1)
+      fog
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -370,9 +376,9 @@ DEPENDENCIES
   devise
   dotenv-rails
   factory_girl_rails (~> 4.0)
-  fog
   highline
   jbuilder (~> 2.0)
+  jellyfish-fog-aws!
   license_finder
   paranoia
   pg (~> 0.17.1)
