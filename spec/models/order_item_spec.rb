@@ -39,7 +39,6 @@ describe OrderItem do
     allow(ManageIQ).to receive(:provision)
 
     id = create(:order_item).id
-    binding.pry
 
     expect(ManageIQ).to have_received(:delay).with(queue: 'provision_request')
     expect(ManageIQ).to have_received(:provision).with(id)

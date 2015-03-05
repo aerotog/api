@@ -1,12 +1,12 @@
 require 'rails_helper'
 
-RSpec.describe ProvisionWorker do
+RSpec.describe ManageIQ do
   it 'provisions cloud instances using manage iq' do
     client = build_client
     order_item = build_order_item
-    provision_worker = setup_provision_worker_spec(order_item, client)
+    setup_provisioner_spec(client)
 
-    provision_worker.perform
+    ManageIQ.provision(order_item.id)
     order_item.reload
 
     expect(client).to have_received(:post)
@@ -18,9 +18,9 @@ RSpec.describe ProvisionWorker do
   it 'sets the status to critical when a response between 400 and 407 happens' do
     client = build_client(404)
     order_item = build_order_item
-    provision_worker = setup_provision_worker_spec(order_item, client)
+    setup_provisioner_spec(client)
 
-    provision_worker.perform
+    ManageIQ.provision(order_item.id)
     order_item.reload
 
     expect(order_item.provision_status).to eq 'critical'
@@ -29,9 +29,9 @@ RSpec.describe ProvisionWorker do
   it 'sets the status to warning when a response other than 200s or 400 to 407 happens' do
     client = build_client(500)
     order_item = build_order_item
-    provision_worker = setup_provision_worker_spec(order_item, client)
+    setup_provisioner_spec(client)
 
-    provision_worker.perform
+    ManageIQ.provision(order_item.id)
     order_item.reload
 
     expect(order_item.provision_status).to eq 'warning'
@@ -46,11 +46,10 @@ RSpec.describe ProvisionWorker do
     double('client', post: post_response)
   end
 
-  def setup_provision_worker_spec(order_item, client)
+  def setup_provisioner_spec(client)
     create(:setting, hid: 'aws')
     create(:staff, email: 'test@example.com')
-    create(
-      :setting,
+    create(:setting,
       hid: 'manageiq',
       setting_fields: [
         build(:setting_field, hid: 'enabled', value: true),
@@ -61,7 +60,5 @@ RSpec.describe ProvisionWorker do
     allow(RestClient::Resource).to receive(:new) do
       double('rest client', :[] => client)
     end
-
-    ProvisionWorker.new(order_item.id)
   end
 end

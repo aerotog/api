@@ -2,7 +2,11 @@ module Jellyfish::Fog::AWS
   class Databases < ::Provisioner
     def provision
       db_instance_id = "id-#{order_item.uuid[0..9]}"
-      connection.create_db_instance(db_instance_id, details)
+      begin
+        connection.create_db_instance(db_instance_id, details)
+      rescue Excon::Errors::BadRequest, Excon::Errors::Forbidden => e
+        raise e, 'Bad request. Check for valid credentials and proper permissions.', e.backtrace
+      end
 
       order_item.instance_name = db_instance_id
       order_item.password = BCrypt::Password.create(@sec_pw)
@@ -15,6 +19,8 @@ module Jellyfish::Fog::AWS
     def retire
       connection.delete_db_instance(identifier, snapshot, false)
       order_item.provision_status = :retired
+    rescue Excon::Errors::BadRequest, Excon::Errors::Forbidden => e
+      raise e, 'Bad request. Check for valid credentials and proper permissions.', e.backtrace
     end
 
     private

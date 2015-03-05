@@ -23,8 +23,7 @@ class ManageIQ < Provisioner
     response = request[path].post(payload.to_json, content_type: 'application/json')
 
     begin
-      data = ActiveSupport::JSON.decode(response.body)
-      populate_order_item_with_respose_data(data)
+      populate_order_item_with_respose_data(response)
     rescue => e
       order_item.provision_status = :unknown
       order_item.payload_acknowledgement = {
@@ -51,7 +50,8 @@ class ManageIQ < Provisioner
     end
   end
 
-  def populate_order_item_with_respose_data(data)
+  def populate_order_item_with_respose_data(response)
+    data = ActiveSupport::JSON.decode(response.body)
     order_item.payload_acknowledgement = data
     order_item.provision_status = status_from_response_code(response.code)
     order_item.miq_id = data['results'][0]['id'] if (200..299).cover?(response.code)
@@ -61,14 +61,14 @@ class ManageIQ < Provisioner
     {
       action: 'order',
       resource: {
-        href: "#{miq_settings[:url]}/api/service_templates/#{order_item.product.service_type_id}",
+        href: "#{miq_settings[:url]}/api/service_templates/#{order_item.product.provisionable.service_type_id}",
         referer: ENV['DEFAULT_URL'], # TODO: Move this into a manageiq setting
         email: miq_settings[:email],
         token: miq_settings[:token],
         order_item: {
           id: order_item.id,
           uuid: order_item.uuid.to_s,
-          product_details: order_item_details
+          product_details: order_item.answers
         }
       }
     }

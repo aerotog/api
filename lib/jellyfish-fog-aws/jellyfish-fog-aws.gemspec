@@ -5,7 +5,7 @@ require 'jellyfish/fog/aws/version'
 
 Gem::Specification.new do |spec|
   spec.name          = "jellyfish-fog-aws"
-  spec.version       = Jellyfish::Fog::Aws::VERSION
+  spec.version       = Jellyfish::Fog::AWS::VERSION
   spec.authors       = ["Caleb Thompson"]
   spec.email         = ["caleb@calebthompson.io"]
   spec.summary       = %q{TODO: Write a short summary. Required.}
@@ -20,5 +20,6 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency "bundler"
   spec.add_development_dependency "rake"
+  spec.add_dependency "railties"
   spec.add_dependency "fog"
 end

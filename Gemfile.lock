@@ -3,6 +3,7 @@ PATH
   specs:
     jellyfish-fog-aws (0.0.1)
       fog
+      railties
 
 GEM
   remote: https://rubygems.org/

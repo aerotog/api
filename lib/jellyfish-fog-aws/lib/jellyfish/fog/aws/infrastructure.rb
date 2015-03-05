@@ -3,7 +3,11 @@ module Jellyfish::Fog::AWS
     def provision
       # TODO: Must get an image_id from product types
       details = order_item.answers.merge('image_id' => 'ami-acca47c4')
-      server = connection.servers.create(details).tap { |s| s.wait_for { ready? } }
+      begin
+        server = connection.servers.create(details).tap { |s| s.wait_for { ready? } }
+      rescue Excon::Errors::BadRequest, Excon::Errors::Forbidden => e
+        raise e, 'Bad request. Check for valid credentials and proper permissions.', e.backtrace
+      end
 
       order_item.instance_id = server.id
       order_item.private_ip = server.private_ip_address
@@ -13,6 +17,8 @@ module Jellyfish::Fog::AWS
     def retire
       connection.servers.delete(server_identifier)
       order_item.provision_status = :retired
+    rescue Excon::Errors::BadRequest, Excon::Errors::Forbidden => e
+      raise e, 'Bad request. Check for valid credentials and proper permissions.', e.backtrace
     end
 
     private
