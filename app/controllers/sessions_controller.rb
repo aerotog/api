@@ -1,4 +1,7 @@
 class SessionsController < Devise::SessionsController
+  before_action :pre_hook
+  after_action :post_hook
+
   respond_to :json, :html
 
   skip_before_action :verify_signed_out_user, only: :destroy
@@ -39,5 +42,13 @@ class SessionsController < Devise::SessionsController
         render json: {}, status: :ok
       end
     end
+  end
+
+  def pre_hook
+    ActiveSupport::Notifications.instrument(controller_name + '#' + action_name + '/pre_hook')
+  end
+
+  def post_hook
+    ActiveSupport::Notifications.instrument(controller_name + '#' + action_name + '/post_hook')
   end
 end

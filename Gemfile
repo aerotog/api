@@ -91,3 +91,6 @@ gem 'active_model_serializers', '~> 0.8.0'
 
 # fog.io
 gem 'fog'
+
+# Uses hooks to send notifications
+gem 'jellyfish-notice'

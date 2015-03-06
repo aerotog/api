@@ -192,6 +192,9 @@ GEM
     jbuilder (2.2.7)
       activesupport (>= 3.0.0, < 5)
       multi_json (~> 1.2)
+    jellyfish-notice (0.0.1)
+      dotenv-rails
+      rails
     json (1.8.2)
     license_finder (1.2)
       bundler
@@ -373,6 +376,7 @@ DEPENDENCIES
   fog
   highline
   jbuilder (~> 2.0)
+  jellyfish-notice
   license_finder
   paranoia
   pg (~> 0.17.1)
